@@ -69,6 +69,9 @@ void keyPressed() {
   if (key == '3' && !isGraphRunning && currentScreen == 1) {
     batteryProfile = 3;
   }
+  if(keyCode == ENTER){
+  currentScreen = 0;
+  }
 }
 
 void stop() {

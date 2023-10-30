@@ -22,11 +22,13 @@ void batteryProfile() {
 }
 
 void startScreen() {
+  background(255);
   fill(24, 27, 122);
   textAlign(CENTER, CENTER);
   textSize(50);
-  text("Battery Tester Program", width/2, height/2);
-  text("Please make sure your arduino is connected", width/2, height/2+70);
+  text("Battery Tester Program", width/2, height/4);
+  text("Please make sure your arduino is connected", width/2, height/4+70);
+  text("Press Enter in order to come back to the main menu",width/2,height/4+140);
 }
 
 void currentVoltageScreen() {
