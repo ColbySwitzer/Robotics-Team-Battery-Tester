@@ -18,7 +18,7 @@ void screenManagement() {
 void batteryProfile() {
   fill(0);
   textSize(20);
-  text("Battery: "+batteryProfile, 50, 100);
+  text("Battery: "+batteryProfile, 150, 100);
 }
 
 void startScreen() {
@@ -28,13 +28,24 @@ void startScreen() {
   textSize(50);
   text("Battery Tester Program", width/2, height/4);
   text("Please make sure your arduino is connected", width/2, height/4+70);
-  text("Press Enter in order to come back to the main menu",width/2,height/4+140);
+  CV_button.draw();
+  if(CV_button.buttonClicked){
+  println("Button has been clicked");
+  currentScreen = 1;
+  CV_button.buttonClicked = false;
+  }
 }
 
 void currentVoltageScreen() {
   background(255);
   batteryProfile();
-  text("Graph Running: "+isGraphRunning, 50, 50);
+  CVESC_button.draw();
+  if(CVESC_button.buttonClicked){
+  println("Button has been clicked");
+  currentScreen = 0;
+  CVESC_button.buttonClicked = false;
+  }
+  text("Graph Running: "+isGraphRunning, 150, 50);
 
   float squareHeight = 400;
   float squareWidth = 600;

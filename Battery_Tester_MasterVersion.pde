@@ -4,6 +4,8 @@ import processing.data.*;
 JSONObject json = new JSONObject();
 String filePath = "data/output.json";
 
+Button CVESC_button, CV_button;
+
 Serial myPort;
 ArrayList<Float> dataPoints = new ArrayList<Float>();
 ArrayList<Float> overlayPoints = new ArrayList<Float>();
@@ -15,9 +17,21 @@ float voltMax = 15.0;
 int currentScreen = 1;
 int batteryProfile = 1;
 
+int buttonX, buttonY, buttonW = 100, buttonH = 40;
+int buttonX_cvbutton, buttonY_cvbutton;
+int buttonW_cvbutton = 150;
+
 void setup() {
   size(1260, 640);
   initializeSerialPort();
+  buttonX = width - 150 - buttonW/2;
+  buttonY = 50 - buttonH/2;
+  
+  buttonX_cvbutton = width/2 + 100 - buttonW/2;
+  buttonY_cvbutton = height/2+150 - buttonH/2;
+
+  CVESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
+  CV_button = new Button(buttonX, buttonY, buttonW, buttonH, "Current Voltage");
 }
 
 void initializeSerialPort() {
@@ -69,10 +83,20 @@ void keyPressed() {
   if (key == '3' && !isGraphRunning && currentScreen == 1) {
     batteryProfile = 3;
   }
-  if(keyCode == ENTER){
-  currentScreen = 0;
+  if (keyCode == ENTER) {
+    currentScreen = 0;
   }
 }
+
+void mousePressed() {
+  if (CVESC_button.isMouseOver()) {
+    CVESC_button.buttonClicked = true;
+  }
+  if(CV_button.isMouseOver()){
+  CV_button.buttonClicked = true;
+  }
+}
+
 
 void stop() {
   if (myPort != null) {
