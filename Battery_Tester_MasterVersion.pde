@@ -4,7 +4,7 @@ import processing.data.*;
 JSONObject json = new JSONObject();
 String filePath = "data/output.json";
 
-Button CVESC_button, CV_button, SV_button;
+Button ESC_button, CV_button, SV_button;
 int buttonX, 
 buttonY, 
 buttonX_cvbutton, //X pos for "Current Voltage" button on main menu
@@ -37,7 +37,7 @@ void setup() {
   buttonY_cvbutton = height/2+150 - buttonH/2;
   buttonX_svbutton = width/2 - 100 - buttonW/2;
 
-  CVESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
+  ESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
   CV_button = new Button(buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonH, "Current Voltage");
   SV_button = new Button(buttonX_svbutton, buttonY_cvbutton, buttonW, buttonH, "Saved Data");
 }
@@ -94,8 +94,8 @@ void keyPressed() {
 }
 
 void mousePressed() {
-  if (CVESC_button.isMouseOver()) {
-    CVESC_button.buttonClicked = true;
+  if (ESC_button.isMouseOver()) {
+    ESC_button.buttonClicked = true;
   }
   if(CV_button.isMouseOver()){
   CV_button.buttonClicked = true;

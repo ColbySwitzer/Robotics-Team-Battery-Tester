@@ -31,7 +31,7 @@ void startScreen() {
 void currentVoltageScreen() {
   background(255);
   batteryProfile();
-  currentVoltageESCAPE();
+  ESCAPEbutton();
   text("Graph Running: "+isGraphRunning, 150, 50);
   currentGraphDisplay();
 }
@@ -47,12 +47,12 @@ void batteryProfile() {
   text("Battery: "+batteryProfile, 150, 100);
 }
 
-void currentVoltageESCAPE() {
-  CVESC_button.draw();
-  if (CVESC_button.buttonClicked) {
+void ESCAPEbutton() {
+  ESC_button.draw();
+  if (ESC_button.buttonClicked) {
     println("Button has been clicked");
     currentScreen = 0;
-    CVESC_button.buttonClicked = false;
+    ESC_button.buttonClicked = false;
   }
 }
 
