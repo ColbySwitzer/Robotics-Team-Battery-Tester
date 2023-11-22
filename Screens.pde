@@ -39,6 +39,7 @@ void currentVoltageScreen() {
 void savedDataScreen() {
   background(255);
   batteryProfile();
+  ESCAPEbutton();
 }
 
 void batteryProfile() {

@@ -1,18 +1,20 @@
 import processing.serial.*;
 import processing.data.*;
 
+JSONObject batteryProfiles = new JSONObject();
 JSONObject json = new JSONObject();
 String filePath = "data/output.json";
+String batFilePath = "data/batteryProfiles.json";
 
 Button ESC_button, CV_button, SV_button;
-int buttonX, 
-buttonY, 
-buttonX_cvbutton, //X pos for "Current Voltage" button on main menu
-buttonY_cvbutton, //Y pos for "Current Voltage" button on main menu
-buttonW = 100, //default button width
-buttonH = 40, //default button height
-buttonW_cvbutton = 150, 
-buttonX_svbutton;
+int buttonX,
+  buttonY,
+  buttonX_cvbutton, //X pos for "Current Voltage" button on main menu
+  buttonY_cvbutton, //Y pos for "Current Voltage" button on main menu
+  buttonW = 100, //default button width
+  buttonH = 40, //default button height
+  buttonW_cvbutton = 150,
+  buttonX_svbutton;
 
 Serial myPort;
 ArrayList<Float> dataPoints = new ArrayList<Float>();
@@ -24,15 +26,27 @@ float data;
 float voltMin = 0.0;
 float voltMax = 15.0;
 
-int currentScreen = 1;
+int currentScreen = 0;
 int batteryProfile = 1;
- 
+int amountBatPro;
+
 void setup() {
   size(1260, 640);
   initializeSerialPort();
+  setupButtons();
+  jsonInitialize();
+}
+
+void initializeSerialPort() {
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
+  println(portName+" is initialized");
+}
+
+void setupButtons() {
   buttonX = width - 150 - buttonW/2;
   buttonY = 50 - buttonH/2;
-  
+
   buttonX_cvbutton = width/2 + 100 - buttonW/2;
   buttonY_cvbutton = height/2+150 - buttonH/2;
   buttonX_svbutton = width/2 - 100 - buttonW/2;
@@ -42,10 +56,11 @@ void setup() {
   SV_button = new Button(buttonX_svbutton, buttonY_cvbutton, buttonW, buttonH, "Saved Data");
 }
 
-void initializeSerialPort() {
-  String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
-  println(portName+" is initialized");
+void jsonInitialize(){
+batteryProfiles = loadJSONObject(batFilePath);
+
+amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
+println("Retrieved Int: "+amountBatPro);
 }
 
 void draw() {
@@ -97,17 +112,19 @@ void mousePressed() {
   if (ESC_button.isMouseOver()) {
     ESC_button.buttonClicked = true;
   }
-  if(CV_button.isMouseOver()){
-  CV_button.buttonClicked = true;
+  if (CV_button.isMouseOver()) {
+    CV_button.buttonClicked = true;
   }
-  if(SV_button.isMouseOver()){
-  SV_button.buttonClicked = true;
+  if (SV_button.isMouseOver()) {
+    SV_button.buttonClicked = true;
   }
 }
 
 
-void stop() {
+void exit() {
   if (myPort != null) {
     myPort.stop();
   }
+  batteryProfiles.setInt("Number of Battery Profiles", amountBatPro);
+  saveJSONObject(batteryProfiles, batFilePath);
 }
