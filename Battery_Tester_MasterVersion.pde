@@ -6,15 +6,8 @@ JSONObject json = new JSONObject();
 String filePath = "data/output.json";
 String batFilePath = "data/batteryProfiles.json";
 
-Button ESC_button, CV_button, SV_button;
-int buttonX,
-  buttonY,
-  buttonX_cvbutton, //X pos for "Current Voltage" button on main menu
-  buttonY_cvbutton, //Y pos for "Current Voltage" button on main menu
-  buttonW = 100, //default button width
-  buttonH = 40, //default button height
-  buttonW_cvbutton = 150,
-  buttonX_svbutton;
+Button ESC_button, CV_button, SV_button, increaseBatPro_button, decreaseBatPro_button;
+int buttonX, buttonY, buttonW, buttonH, buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonX_svbutton;
 
 Serial myPort;
 ArrayList<Float> dataPoints = new ArrayList<Float>();
@@ -32,7 +25,7 @@ int amountBatPro;
 
 void setup() {
   size(1260, 640);
-  initializeSerialPort();
+  //initializeSerialPort();
   setupButtons();
   jsonInitialize();
 }
@@ -44,23 +37,33 @@ void initializeSerialPort() {
 }
 
 void setupButtons() {
-  buttonX = width - 150 - buttonW/2;
+  buttonX = width - 75 - buttonW/2;
   buttonY = 50 - buttonH/2;
+  buttonW = 100;
+  buttonH = 40;
+  
+  ESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
 
   buttonX_cvbutton = width/2 + 100 - buttonW/2;
   buttonY_cvbutton = height/2+150 - buttonH/2;
   buttonX_svbutton = width/2 - 100 - buttonW/2;
 
-  ESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
+  
   CV_button = new Button(buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonH, "Current Voltage");
   SV_button = new Button(buttonX_svbutton, buttonY_cvbutton, buttonW, buttonH, "Saved Data");
+
+  int plusMinusButtonW = buttonW+20;
+  int plusMinusButtonX = 100-plusMinusButtonW/2;
+  int plusButtonY = 150;
+  increaseBatPro_button = new Button(plusMinusButtonX, plusButtonY, plusMinusButtonW, buttonH, "Add Profile");
+  decreaseBatPro_button = new Button(plusMinusButtonX, plusButtonY+buttonH+20, plusMinusButtonW, buttonH, "Delete Profile");
 }
 
-void jsonInitialize(){
-batteryProfiles = loadJSONObject(batFilePath);
+void jsonInitialize() {
+  batteryProfiles = loadJSONObject(batFilePath);
 
-amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
-println("Retrieved Int: "+amountBatPro);
+  amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
+  println("Retrieved Int: "+amountBatPro);
 }
 
 void draw() {
@@ -87,7 +90,7 @@ void keyPressed() {
     saveJSONObject(json, filePath);
     println("JSON file created and data saved!");
   }
-  if ( key == 'l' /*&&   currentScreen == 2*/) {
+  if ( key == 'l') {
     ArrayList<Float> jsonArrayData = new ArrayList<Float>();
     JSONArray jsonArray = json.getJSONArray("Data Points");
     for (int i=0; i<jsonArray.size(); i++) {
@@ -96,15 +99,6 @@ void keyPressed() {
     }
     println(jsonArrayData);
     println("Pulled Array Successfully!");
-  }
-  if (key == '1' && !isGraphRunning && currentScreen == 1) {
-    batteryProfile = 1;
-  }
-  if (key == '2' && !isGraphRunning && currentScreen == 1) {
-    batteryProfile = 2;
-  }
-  if (key == '3' && !isGraphRunning && currentScreen == 1) {
-    batteryProfile = 3;
   }
 }
 
@@ -117,6 +111,14 @@ void mousePressed() {
   }
   if (SV_button.isMouseOver()) {
     SV_button.buttonClicked = true;
+  }
+  if (increaseBatPro_button.isMouseOver()) {
+    increaseBatPro_button.buttonClicked = true;
+  }
+  if (decreaseBatPro_button.isMouseOver()) {
+    if (amountBatPro > 0 ) {
+      decreaseBatPro_button.buttonClicked = true;
+    }
   }
 }
 

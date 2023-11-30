@@ -40,6 +40,8 @@ void savedDataScreen() {
   background(255);
   batteryProfile();
   ESCAPEbutton();
+  addBatteryProfile();
+  subtractBatteryProfile();
 }
 
 void batteryProfile() {
@@ -73,5 +75,23 @@ void savedVoltageButton() {
     println("Button has been clicked");
     currentScreen = 2;
     SV_button.buttonClicked = false;
+  }
+}
+
+void addBatteryProfile() {
+  increaseBatPro_button.draw();
+  if (increaseBatPro_button.buttonClicked) {
+    amountBatPro++;
+     println(amountBatPro);
+    increaseBatPro_button.buttonClicked = false;
+  }
+}
+
+void subtractBatteryProfile() {
+  decreaseBatPro_button.draw();
+  if (decreaseBatPro_button.buttonClicked) {
+    amountBatPro--;
+      println(amountBatPro);
+    decreaseBatPro_button.buttonClicked = false;
   }
 }
