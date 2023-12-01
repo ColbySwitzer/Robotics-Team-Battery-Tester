@@ -42,12 +42,14 @@ void savedDataScreen() {
   ESCAPEbutton();
   addBatteryProfile();
   subtractBatteryProfile();
+  increaseDecreaseCurrentBatteryProfileButtons();
 }
 
 void batteryProfile() {
   fill(0);
   textSize(20);
-  text("Battery: "+batteryProfile, 150, 100);
+  text("Battery: "+currentBatteryProfile, 150, 100);
+  text("Swap Profile", 150, 125);
 }
 
 void ESCAPEbutton() {
@@ -82,7 +84,7 @@ void addBatteryProfile() {
   increaseBatPro_button.draw();
   if (increaseBatPro_button.buttonClicked) {
     amountBatPro++;
-     println(amountBatPro);
+    println(amountBatPro);
     increaseBatPro_button.buttonClicked = false;
   }
 }
@@ -91,7 +93,24 @@ void subtractBatteryProfile() {
   decreaseBatPro_button.draw();
   if (decreaseBatPro_button.buttonClicked) {
     amountBatPro--;
-      println(amountBatPro);
+    println(amountBatPro);
     decreaseBatPro_button.buttonClicked = false;
+  }
+}
+
+void increaseDecreaseCurrentBatteryProfileButtons() {
+  increaseCurrentBatteryProfileButton.draw();
+  decreaseCurrentBatteryProfileButton.draw();
+  if (increaseCurrentBatteryProfileButton.buttonClicked) {
+    if (currentBatteryProfile < amountBatPro) {
+      currentBatteryProfile++;
+    }
+    increaseCurrentBatteryProfileButton.buttonClicked = false;
+  }
+  if (decreaseCurrentBatteryProfileButton.buttonClicked) {
+    if (currentBatteryProfile > 0) {
+      currentBatteryProfile--;
+    }
+    decreaseCurrentBatteryProfileButton.buttonClicked = false;
   }
 }

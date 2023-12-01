@@ -6,8 +6,8 @@ JSONObject json = new JSONObject();
 String filePath = "data/output.json";
 String batFilePath = "data/batteryProfiles.json";
 
-Button ESC_button, CV_button, SV_button, increaseBatPro_button, decreaseBatPro_button;
-int buttonX, buttonY, buttonW, buttonH, buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonX_svbutton;
+Button ESC_button, CV_button, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton;
+int escapeButtonX, escapeButtonY, escapeButtonW, escapeButtonH, buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonX_svbutton, increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH;
 
 Serial myPort;
 ArrayList<Float> dataPoints = new ArrayList<Float>();
@@ -22,6 +22,7 @@ float voltMax = 15.0;
 int currentScreen = 0;
 int batteryProfile = 1;
 int amountBatPro;
+int currentBatteryProfile;
 
 void setup() {
   size(1260, 640);
@@ -37,18 +38,19 @@ void initializeSerialPort() {
 }
 
 void setupButtons() {
-  buttonX = width - 75 - buttonW/2;
-  buttonY = 50 - buttonH/2;
-  buttonW = 100;
-  buttonH = 40;
-  
-  ESC_button = new Button(buttonX, buttonY, buttonW, buttonH, "ESC");
+  escapeButtonX = width - 110 - escapeButtonW/2;
+  escapeButtonY = 10 - escapeButtonH/2;
+  escapeButtonW = 100;
+  escapeButtonH = 40;
+
+  ESC_button = new Button(escapeButtonX, escapeButtonY, escapeButtonW, escapeButtonH, "ESC");
 
   buttonX_cvbutton = width/2 + 100 - buttonW/2;
   buttonY_cvbutton = height/2+150 - buttonH/2;
   buttonX_svbutton = width/2 - 100 - buttonW/2;
+  buttonW_cvbutton = 140;
 
-  
+
   CV_button = new Button(buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonH, "Current Voltage");
   SV_button = new Button(buttonX_svbutton, buttonY_cvbutton, buttonW, buttonH, "Saved Data");
 
@@ -57,13 +59,24 @@ void setupButtons() {
   int plusButtonY = 150;
   increaseBatPro_button = new Button(plusMinusButtonX, plusButtonY, plusMinusButtonW, buttonH, "Add Profile");
   decreaseBatPro_button = new Button(plusMinusButtonX, plusButtonY+buttonH+20, plusMinusButtonW, buttonH, "Delete Profile");
+
+
+  increaseCurrentBatteryProfileButtonX = 50;
+  increaseCurrentBatteryProfileButtonY = 275;
+  increaseCurrentBatteryProfileButtonW = 40;
+  increaseCurrentBatteryProfileButtonH = 40;
+
+  increaseCurrentBatteryProfileButton = new Button(increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH, "+");
+  decreaseCurrentBatteryProfileButton = new Button(increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY+50, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH, "-");
 }
 
 void jsonInitialize() {
   batteryProfiles = loadJSONObject(batFilePath);
 
   amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
+  currentBatteryProfile = batteryProfiles.getInt("Current Battery Profile");
   println("Retrieved Int: "+amountBatPro);
+  println("Retrieved Current Profile: "+currentBatteryProfile);
 }
 
 void draw() {
@@ -86,7 +99,7 @@ void keyPressed() {
       JSONdataPoints.append(f);
     }
 
-    json.setJSONArray("Data Points", JSONdataPoints);
+    json.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
     saveJSONObject(json, filePath);
     println("JSON file created and data saved!");
   }
@@ -120,6 +133,12 @@ void mousePressed() {
       decreaseBatPro_button.buttonClicked = true;
     }
   }
+  if (increaseCurrentBatteryProfileButton.isMouseOver()) {
+    increaseCurrentBatteryProfileButton.buttonClicked = true;
+  }
+  if (decreaseCurrentBatteryProfileButton.isMouseOver()) {
+    decreaseCurrentBatteryProfileButton.buttonClicked = true;
+  }
 }
 
 
@@ -127,6 +146,13 @@ void exit() {
   if (myPort != null) {
     myPort.stop();
   }
+
+  for (int i=0; i<amountBatPro; i++) {
+  }
   batteryProfiles.setInt("Number of Battery Profiles", amountBatPro);
+  if (currentBatteryProfile<1) {
+    currentBatteryProfile = 1;
+  }
+  batteryProfiles.setInt("Current Battery Profile", currentBatteryProfile);
   saveJSONObject(batteryProfiles, batFilePath);
 }
