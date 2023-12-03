@@ -10,6 +10,9 @@ void screenManagement() {
   case 2:
     savedDataScreen();
     break;
+    case 3:
+    settingsScreen();
+    break;
   default:
     currentScreen = 0;
   }
@@ -33,7 +36,8 @@ void currentVoltageScreen() {
   batteryProfile();
   ESCAPEbutton();
   text("Graph Running: "+isGraphRunning, 150, 50);
-  currentGraphDisplay();
+  readSerialPort();
+  cg.draw(dataPoints);
 }
 
 void savedDataScreen() {
@@ -43,7 +47,10 @@ void savedDataScreen() {
   addBatteryProfile();
   subtractBatteryProfile();
   increaseDecreaseCurrentBatteryProfileButtons();
+  sg.draw(dataPoints);
 }
+
+void settingsScreen(){}
 
 void batteryProfile() {
   fill(0);
@@ -112,5 +119,13 @@ void increaseDecreaseCurrentBatteryProfileButtons() {
       currentBatteryProfile--;
     }
     decreaseCurrentBatteryProfileButton.buttonClicked = false;
+  }
+}
+
+void settingButton() {
+  settingsButton.draw();
+  if (settingsButton.buttonClicked) {
+    currentScreen = 3;
+    settingsButton.buttonClicked = false;
   }
 }

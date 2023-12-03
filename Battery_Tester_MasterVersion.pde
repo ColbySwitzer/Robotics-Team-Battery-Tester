@@ -4,7 +4,10 @@ import processing.data.*;
 JSONObject batteryProfiles = new JSONObject(), json = new JSONObject();
 String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
 
-Button escapeButton, currentVoltageButton, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton;
+ArrayList<Button> buttons = new ArrayList<>();
+Button escapeButton, currentVoltageButton, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton, settingsButton;
+currentGraph cg;
+savedGraph sg;
 
 Serial myPort;
 boolean serialError;
@@ -25,6 +28,7 @@ int currentBatteryProfile;
 void setup() {
   size(1260, 640);
   //initializeSerialPort();
+  initializeGraphs();
   setupButtons();
   jsonInitialize();
 }
@@ -114,6 +118,23 @@ void setupButtons() {
 
   increaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "+");
   decreaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY+50, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "-");
+
+
+  int settingsButtonW = 100;
+  int settingsButtonH = 40;
+  int settingsButtonX = width/2;
+  int settingsButtonY = height/2+100;
+
+  settingsButton = new Button(settingsButtonX, settingsButtonY, settingsButtonW, settingsButtonH, "Settings");
+
+  buttons.add(escapeButton);
+  buttons.add(currentVoltageButton);
+  buttons.add(SV_button);
+  buttons.add(increaseBatPro_button);
+  buttons.add(decreaseBatPro_button);
+  buttons.add(increaseCurrentBatteryProfileButton);
+  buttons.add(decreaseCurrentBatteryProfileButton);
+  buttons.add(settingsButton);
 }
 
 void jsonInitialize() {
@@ -125,31 +146,15 @@ void jsonInitialize() {
   println("Retrieved Current Profile: "+currentBatteryProfile);
 }
 
+void initializeGraphs() {
+  cg = new currentGraph();
+  sg = new savedGraph();
+}
 
 // ########################################################### MOUSE PRESSED METHODS ########################################################### \\
 void isMouseOverCalls() {
-  if (escapeButton.isMouseOver()) {
-    escapeButton.buttonClicked = true;
-  }
-  if (currentVoltageButton.isMouseOver()) {
-    currentVoltageButton.buttonClicked = true;
-  }
-  if (SV_button.isMouseOver()) {
-    SV_button.buttonClicked = true;
-  }
-  if (increaseBatPro_button.isMouseOver()) {
-    increaseBatPro_button.buttonClicked = true;
-  }
-  if (decreaseBatPro_button.isMouseOver()) {
-    if (amountBatPro > 0 ) {
-      decreaseBatPro_button.buttonClicked = true;
-    }
-  }
-  if (increaseCurrentBatteryProfileButton.isMouseOver()) {
-    increaseCurrentBatteryProfileButton.buttonClicked = true;
-  }
-  if (decreaseCurrentBatteryProfileButton.isMouseOver()) {
-    decreaseCurrentBatteryProfileButton.buttonClicked = true;
+  for (Button button : buttons) {
+    button.mousePressed();
   }
 }
 
