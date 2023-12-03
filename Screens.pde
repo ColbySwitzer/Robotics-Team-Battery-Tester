@@ -53,21 +53,21 @@ void batteryProfile() {
 }
 
 void ESCAPEbutton() {
-  ESC_button.draw();
-  if (ESC_button.buttonClicked) {
+  escapeButton.draw();
+  if (escapeButton.buttonClicked) {
     println("Button has been clicked");
     currentScreen = 0;
-    ESC_button.buttonClicked = false;
+    escapeButton.buttonClicked = false;
   }
 }
 
 
 void currentVoltageButton() {
-  CV_button.draw();
-  if (CV_button.buttonClicked) {
+  currentVoltageButton.draw();
+  if (currentVoltageButton.buttonClicked) {
     println("Button has been clicked");
     currentScreen = 1;
-    CV_button.buttonClicked = false;
+    currentVoltageButton.buttonClicked = false;
   }
 }
 

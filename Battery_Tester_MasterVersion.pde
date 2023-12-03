@@ -1,18 +1,16 @@
 import processing.serial.*;
 import processing.data.*;
 
-JSONObject batteryProfiles = new JSONObject();
-JSONObject json = new JSONObject();
-String filePath = "data/output.json";
-String batFilePath = "data/batteryProfiles.json";
+JSONObject batteryProfiles = new JSONObject(), json = new JSONObject();
+String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
 
-Button ESC_button, CV_button, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton;
-int escapeButtonX, escapeButtonY, escapeButtonW, escapeButtonH, buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonX_svbutton, increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH;
+Button escapeButton, currentVoltageButton, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton;
 
 Serial myPort;
+boolean serialError;
+
 ArrayList<Float> dataPoints = new ArrayList<Float>();
 ArrayList<Float> overlayPoints = new ArrayList<Float>();
-boolean serialError;
 
 boolean isGraphRunning = false;
 float data;
@@ -29,54 +27,6 @@ void setup() {
   //initializeSerialPort();
   setupButtons();
   jsonInitialize();
-}
-
-void initializeSerialPort() {
-  String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 9600);
-  println(portName+" is initialized");
-}
-
-void setupButtons() {
-  escapeButtonX = width - 110 - escapeButtonW/2;
-  escapeButtonY = 10 - escapeButtonH/2;
-  escapeButtonW = 100;
-  escapeButtonH = 40;
-
-  ESC_button = new Button(escapeButtonX, escapeButtonY, escapeButtonW, escapeButtonH, "ESC");
-
-  buttonX_cvbutton = width/2 + 100 - buttonW/2;
-  buttonY_cvbutton = height/2+150 - buttonH/2;
-  buttonX_svbutton = width/2 - 100 - buttonW/2;
-  buttonW_cvbutton = 140;
-
-
-  CV_button = new Button(buttonX_cvbutton, buttonY_cvbutton, buttonW_cvbutton, buttonH, "Current Voltage");
-  SV_button = new Button(buttonX_svbutton, buttonY_cvbutton, buttonW, buttonH, "Saved Data");
-
-  int plusMinusButtonW = buttonW+20;
-  int plusMinusButtonX = 100-plusMinusButtonW/2;
-  int plusButtonY = 150;
-  increaseBatPro_button = new Button(plusMinusButtonX, plusButtonY, plusMinusButtonW, buttonH, "Add Profile");
-  decreaseBatPro_button = new Button(plusMinusButtonX, plusButtonY+buttonH+20, plusMinusButtonW, buttonH, "Delete Profile");
-
-
-  increaseCurrentBatteryProfileButtonX = 50;
-  increaseCurrentBatteryProfileButtonY = 275;
-  increaseCurrentBatteryProfileButtonW = 40;
-  increaseCurrentBatteryProfileButtonH = 40;
-
-  increaseCurrentBatteryProfileButton = new Button(increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH, "+");
-  decreaseCurrentBatteryProfileButton = new Button(increaseCurrentBatteryProfileButtonX, increaseCurrentBatteryProfileButtonY+50, increaseCurrentBatteryProfileButtonW, increaseCurrentBatteryProfileButtonH, "-");
-}
-
-void jsonInitialize() {
-  batteryProfiles = loadJSONObject(batFilePath);
-
-  amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
-  currentBatteryProfile = batteryProfiles.getInt("Current Battery Profile");
-  println("Retrieved Int: "+amountBatPro);
-  println("Retrieved Current Profile: "+currentBatteryProfile);
 }
 
 void draw() {
@@ -116,11 +66,73 @@ void keyPressed() {
 }
 
 void mousePressed() {
-  if (ESC_button.isMouseOver()) {
-    ESC_button.buttonClicked = true;
+  isMouseOverCalls();
+}
+
+
+void exit() {
+  closePort();
+  saveDataOnClose();
+}
+
+// ########################################################### SETUP METHODS ########################################################### \\
+void initializeSerialPort() {
+  String portName = Serial.list()[0];
+  myPort = new Serial(this, portName, 9600);
+  println(portName+" is initialized");
+}
+
+void setupButtons() {
+  int escapeButtonW = 100;
+  int escapeButtonH = 40;
+  int escapeButtonX = width - 55 - escapeButtonW/2;
+  int escapeButtonY = 25 - escapeButtonH/2;
+
+  escapeButton = new Button(escapeButtonX, escapeButtonY, escapeButtonW, escapeButtonH, "ESC");
+
+  int currentVoltageButtonW = 140;
+  int currentVoltageButtonH = escapeButtonH;
+  int currentVoltageButtonX = width/2 + 100 - currentVoltageButtonW/2;
+  int currentVoltageButtonY = height/2+150 - currentVoltageButtonH/2;
+  int savedVoltageButtonX = width/2 - 100 - currentVoltageButtonW/2;
+
+  currentVoltageButton = new Button(currentVoltageButtonX, currentVoltageButtonY, currentVoltageButtonW, currentVoltageButtonH, "Current Voltage");
+  SV_button = new Button(savedVoltageButtonX, currentVoltageButtonY, currentVoltageButtonW, currentVoltageButtonH, "Saved Data");
+
+  int addminusBatteryProfileButtonsW = 120;
+  int addminusBatteryProfileButtonsH = 40;
+  int addminusBatteryProfileButtonsX = 100-addminusBatteryProfileButtonsW/2;
+  int addminusBatteryProfileButtonsY = 150;
+
+  increaseBatPro_button = new Button(addminusBatteryProfileButtonsX, addminusBatteryProfileButtonsY, addminusBatteryProfileButtonsW, addminusBatteryProfileButtonsH, "Add Profile");
+  decreaseBatPro_button = new Button(addminusBatteryProfileButtonsX, addminusBatteryProfileButtonsY+50, addminusBatteryProfileButtonsW, addminusBatteryProfileButtonsH, "Delete Profile");
+
+  int swapCurrentBatteryProfileButtonW = 40;
+  int swapCurrentBatteryProfileButtonH = 40;
+  int swapCurrentBatteryProfileButtonX = 50;
+  int swapCurrentBatteryProfileButtonY = 275;
+
+  increaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "+");
+  decreaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY+50, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "-");
+}
+
+void jsonInitialize() {
+  batteryProfiles = loadJSONObject(batFilePath);
+
+  amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
+  currentBatteryProfile = batteryProfiles.getInt("Current Battery Profile");
+  println("Retrieved Int: "+amountBatPro);
+  println("Retrieved Current Profile: "+currentBatteryProfile);
+}
+
+
+// ########################################################### MOUSE PRESSED METHODS ########################################################### \\
+void isMouseOverCalls() {
+  if (escapeButton.isMouseOver()) {
+    escapeButton.buttonClicked = true;
   }
-  if (CV_button.isMouseOver()) {
-    CV_button.buttonClicked = true;
+  if (currentVoltageButton.isMouseOver()) {
+    currentVoltageButton.buttonClicked = true;
   }
   if (SV_button.isMouseOver()) {
     SV_button.buttonClicked = true;
@@ -141,12 +153,14 @@ void mousePressed() {
   }
 }
 
-
-void exit() {
+// ########################################################### EXIT METHODS ########################################################### \\
+void closePort() {
   if (myPort != null) {
     myPort.stop();
   }
+}
 
+void saveDataOnClose() {
   for (int i=0; i<amountBatPro; i++) {
   }
   batteryProfiles.setInt("Number of Battery Profiles", amountBatPro);
