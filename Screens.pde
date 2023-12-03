@@ -55,8 +55,10 @@ void settingsScreen(){}
 void batteryProfile() {
   fill(0);
   textSize(20);
-  text("Battery: "+currentBatteryProfile, 150, 100);
-  text("Swap Profile", 150, 125);
+  textAlign(LEFT);
+  int textXPos = 45;
+  text("Battery: "+currentBatteryProfile, textXPos, 100);
+  text("Swap Profile", textXPos, 240);
 }
 
 void ESCAPEbutton() {
@@ -115,7 +117,7 @@ void increaseDecreaseCurrentBatteryProfileButtons() {
     increaseCurrentBatteryProfileButton.buttonClicked = false;
   }
   if (decreaseCurrentBatteryProfileButton.buttonClicked) {
-    if (currentBatteryProfile > 0) {
+    if (currentBatteryProfile > 1) {
       currentBatteryProfile--;
     }
     decreaseCurrentBatteryProfileButton.buttonClicked = false;

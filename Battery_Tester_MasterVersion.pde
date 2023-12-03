@@ -1,11 +1,11 @@
 import processing.serial.*;
 import processing.data.*;
 
-JSONObject batteryProfiles = new JSONObject(), json = new JSONObject();
+JSONObject batteryProfiles = new JSONObject(), batteryData = new JSONObject();
 String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
 
 ArrayList<Button> buttons = new ArrayList<>();
-Button escapeButton, currentVoltageButton, SV_button, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton, settingsButton;
+Button escapeButton, currentVoltageButton, savedVoltageButton, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton, settingsButton;
 currentGraph cg;
 savedGraph sg;
 
@@ -53,13 +53,13 @@ void keyPressed() {
       JSONdataPoints.append(f);
     }
 
-    json.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
-    saveJSONObject(json, filePath);
+    batteryData.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
+    saveJSONObject(batteryData, filePath);
     println("JSON file created and data saved!");
   }
   if ( key == 'l') {
     ArrayList<Float> jsonArrayData = new ArrayList<Float>();
-    JSONArray jsonArray = json.getJSONArray("Data Points");
+    JSONArray jsonArray = batteryData.getJSONArray("Data Points");
     for (int i=0; i<jsonArray.size(); i++) {
       Float element = jsonArray.getFloat(i);
       jsonArrayData.add(element);
@@ -101,23 +101,23 @@ void setupButtons() {
   int savedVoltageButtonX = width/2 - 100 - currentVoltageButtonW/2;
 
   currentVoltageButton = new Button(currentVoltageButtonX, currentVoltageButtonY, currentVoltageButtonW, currentVoltageButtonH, "Current Voltage");
-  SV_button = new Button(savedVoltageButtonX, currentVoltageButtonY, currentVoltageButtonW, currentVoltageButtonH, "Saved Data");
+  savedVoltageButton = new Button(savedVoltageButtonX, currentVoltageButtonY, currentVoltageButtonW, currentVoltageButtonH, "Saved Data");
 
   int addminusBatteryProfileButtonsW = 120;
   int addminusBatteryProfileButtonsH = 40;
   int addminusBatteryProfileButtonsX = 100-addminusBatteryProfileButtonsW/2;
-  int addminusBatteryProfileButtonsY = 150;
+  int addminusBatteryProfileButtonsY = 110;
 
   increaseBatPro_button = new Button(addminusBatteryProfileButtonsX, addminusBatteryProfileButtonsY, addminusBatteryProfileButtonsW, addminusBatteryProfileButtonsH, "Add Profile");
   decreaseBatPro_button = new Button(addminusBatteryProfileButtonsX, addminusBatteryProfileButtonsY+50, addminusBatteryProfileButtonsW, addminusBatteryProfileButtonsH, "Delete Profile");
 
   int swapCurrentBatteryProfileButtonW = 40;
   int swapCurrentBatteryProfileButtonH = 40;
-  int swapCurrentBatteryProfileButtonX = 50;
-  int swapCurrentBatteryProfileButtonY = 275;
+  int swapCurrentBatteryProfileButtonX = 40;
+  int swapCurrentBatteryProfileButtonY = 250;
 
-  increaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "+");
-  decreaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY+50, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "-");
+  increaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX+swapCurrentBatteryProfileButtonW+10, swapCurrentBatteryProfileButtonY, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "+");
+  decreaseCurrentBatteryProfileButton = new Button(swapCurrentBatteryProfileButtonX, swapCurrentBatteryProfileButtonY, swapCurrentBatteryProfileButtonW, swapCurrentBatteryProfileButtonH, "-");
 
 
   int settingsButtonW = 100;
@@ -129,7 +129,7 @@ void setupButtons() {
 
   buttons.add(escapeButton);
   buttons.add(currentVoltageButton);
-  buttons.add(SV_button);
+  buttons.add(savedVoltageButton);
   buttons.add(increaseBatPro_button);
   buttons.add(decreaseBatPro_button);
   buttons.add(increaseCurrentBatteryProfileButton);
