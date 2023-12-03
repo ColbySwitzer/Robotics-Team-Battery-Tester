@@ -1,5 +1,6 @@
 import processing.serial.*;
 import processing.data.*;
+import java.io.File;
 
 JSONObject batteryProfiles = new JSONObject(), batteryData = new JSONObject();
 String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
@@ -17,9 +18,6 @@ ArrayList<Float> overlayPoints = new ArrayList<Float>();
 
 boolean isGraphRunning = false;
 float data;
-float voltMin = 0.0;
-float voltMax = 15.0;
-
 int currentScreen = 0;
 int batteryProfile = 1;
 int amountBatPro;

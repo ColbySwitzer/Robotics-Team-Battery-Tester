@@ -1,6 +1,8 @@
 interface Graph {
   int graphWidth = 700;
   int graphHeight = 500;
+  int voltMin = 0;
+  int voltMax = 24;
   void draw(ArrayList<Float> x);
 }
 
@@ -23,7 +25,7 @@ class currentGraph implements Graph {
     beginShape();
     for (int i=0; i < currentDataPoints.size(); i++) {
       float x = map(i, 0, currentDataPoints.size()-1, -graphHeight/2, graphHeight/2);
-      float y = map(currentDataPoints.get(i), 0, 1023, graphHeight/2, -graphHeight/2);
+      float y = map(currentDataPoints.get(i), voltMin, voltMax, graphHeight/2, -graphHeight/2);
       vertex(x, y);
     }
     endShape();
