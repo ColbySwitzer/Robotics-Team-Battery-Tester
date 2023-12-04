@@ -2,7 +2,7 @@ import processing.serial.*;
 import processing.data.*;
 import java.io.File;
 
-JSONObject batteryProfiles = new JSONObject(), batteryData = new JSONObject();
+JSONObject batteryProfiles, batteryData;
 String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
 
 ArrayList<Button> buttons = new ArrayList<>();
@@ -136,7 +136,31 @@ void setupButtons() {
 }
 
 void jsonInitialize() {
-  batteryProfiles = loadJSONObject(batFilePath);
+
+  File file = new File(sketchPath(filePath));
+  File batteryFile = new File(sketchPath(batFilePath));
+
+  if (file.exists() && batteryFile.exists()) {
+    batteryProfiles = loadJSONObject(batFilePath);
+    batteryData = loadJSONObject(filePath);
+  } else if (!file.exists() && batteryFile.exists()) {
+    batteryData = new JSONObject();
+    batteryProfiles = loadJSONObject(batFilePath);
+    saveJSONObject(batteryData, filePath);
+  } else if (file.exists() && !batteryFile.exists()) {
+    batteryData = loadJSONObject(filePath);
+    batteryProfiles = new JSONObject();
+    batteryProfiles.setInt("Number of Battery Profiles", 1);
+     batteryProfiles.setInt("Current Battery Profile", 1);
+    saveJSONObject(batteryProfiles, batFilePath);
+  } else {
+    batteryProfiles = new JSONObject();
+    batteryData = new JSONObject();
+    batteryProfiles.setInt("Number of Battery Profiles", 1);
+     batteryProfiles.setInt("Current Battery Profile", 1);
+    saveJSONObject(batteryData, filePath);
+    saveJSONObject(batteryProfiles, batFilePath);
+  }
 
   amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
   currentBatteryProfile = batteryProfiles.getInt("Current Battery Profile");
