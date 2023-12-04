@@ -25,7 +25,7 @@ int currentBatteryProfile;
 
 void setup() {
   size(1260, 640);
-  //initializeSerialPort();
+  initializeSerialPort();
   initializeGraphs();
   setupButtons();
   jsonInitialize();
