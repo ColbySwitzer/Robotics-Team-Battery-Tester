@@ -20,7 +20,6 @@ class Button {
     text(label, x+w/2, y+h/2);
   }
 
-
   boolean isMouseOver() {
     return mouseX > x && mouseX < x+w && mouseY > y && mouseY < y+h;
   }

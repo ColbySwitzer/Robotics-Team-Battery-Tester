@@ -17,7 +17,7 @@ ArrayList<Float> dataPoints = new ArrayList<Float>();
 ArrayList<Float> overlayPoints = new ArrayList<Float>();
 
 boolean isGraphRunning = false;
-float data;
+//float data;
 int currentScreen = 0;
 int batteryProfile = 1;
 int amountBatPro;
