@@ -14,6 +14,7 @@ void readSerialPort() {
         for (float f : overlayPoints) {
           JSONdataPoints.append(f);
         }
+        //batteryProfileData.get(currentBatteryProfile)
         batteryData.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
         saveJSONObject(batteryData, filePath);
       }

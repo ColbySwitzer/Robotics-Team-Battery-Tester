@@ -17,7 +17,7 @@ class currentGraph implements Graph {
     noFill();
     rect(graphX, graphY, graphWidth, graphHeight);
     translate(graphX+graphWidth/2, graphY+graphHeight /2);
-    
+
     noFill();
     strokeWeight(2);
     beginShape();
@@ -30,15 +30,22 @@ class currentGraph implements Graph {
   }
 }
 
-
 class savedGraph implements Graph {
 
   savedGraph() {
   }
 
-  void loadGraph(int batteryProfile, String JSONFilePath, JSONObject file) {
+  ArrayList<Float> getGraphData(int currentProfile) {
+    ArrayList<Float> savedDataPoints = new ArrayList<Float>();
+    JSONArray jsonArray = batteryData.getJSONArray(str(currentProfile));
+    if (jsonArray != null) {
+      for (int i=0; i<jsonArray.size(); i++) {
+        Float element = jsonArray.getFloat(i);
+        savedDataPoints.add(element);
+      }
+    }
+    return savedDataPoints;
   }
-
 
   void draw(ArrayList<Float> savedDataPoints) {
     float graphX = (width-graphWidth)/2;
@@ -46,13 +53,13 @@ class savedGraph implements Graph {
     noFill();
     rect(graphX, graphY, graphWidth, graphHeight);
     translate(graphX+graphWidth/2, graphY+graphHeight /2);
-    
+
     noFill();
     strokeWeight(2);
     beginShape();
     for (int i=0; i < savedDataPoints.size(); i++) {
-      float x = map(i, 0, savedDataPoints.size()-1, -graphHeight/2, graphHeight/2);
-      float y = map(savedDataPoints.get(i), 0, 1023, graphHeight/2, -graphHeight/2);
+      float x = map(i, 0, savedDataPoints.size()-1, -graphWidth/2, graphWidth/2);
+      float y = map(savedDataPoints.get(i), voltMin, voltMax, graphHeight/2, -graphHeight/2);
       vertex(x, y);
     }
     endShape();

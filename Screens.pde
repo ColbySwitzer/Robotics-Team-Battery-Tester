@@ -33,35 +33,34 @@ void startScreen() {
 
 void currentVoltageScreen() {
   background(255);
-  batteryProfile(currentScreen);
+  batteryProfile();
   ESCAPEbutton();
-  text("Graph Running: "+isGraphRunning, 150, 50);
+  text("Graph Running: "+isGraphRunning, 130, 50);
   readSerialPort();
   cg.draw(dataPoints);
 }
 
 void savedDataScreen() {
   background(255);
-  batteryProfile(currentScreen);
+  batteryProfile();
   ESCAPEbutton();
-  addBatteryProfile();
-  subtractBatteryProfile();
-  increaseDecreaseCurrentBatteryProfileButtons();
-  sg.draw(dataPoints);
+  addsubtractBatteryProfile();
+  sg.draw(sg.getGraphData(currentBatteryProfile));
+  //sg.draw();
 }
 
 void settingsScreen() {
 }
 
-void batteryProfile(int screen) {
+void batteryProfile() {
   fill(0);
   textSize(20);
   textAlign(LEFT);
   int textXPos = 45;
   text("Battery: "+currentBatteryProfile, textXPos, 100);
-  if (screen == 2) {
-    text("Swap Profile", textXPos, 240);
-  }
+  text("Swap Profile", textXPos, 133);
+
+  increaseDecreaseCurrentBatteryProfileButtons();
 }
 
 void ESCAPEbutton() {
@@ -72,7 +71,6 @@ void ESCAPEbutton() {
     escapeButton.buttonClicked = false;
   }
 }
-
 
 void currentVoltageButton() {
   currentVoltageButton.draw();
@@ -89,21 +87,18 @@ void savedVoltageButton() {
     println("Button has been clicked");
     currentScreen = 2;
     savedVoltageButton.buttonClicked = false;
-  }
+  }  
 }
 
-void addBatteryProfile() {
+void addsubtractBatteryProfile() {
   increaseBatPro_button.draw();
-  if (increaseBatPro_button.buttonClicked) {
+  decreaseBatPro_button.draw();
+  if (increaseBatPro_button.buttonClicked && isGraphRunning == false) {
     amountBatPro++;
     println(amountBatPro);
     increaseBatPro_button.buttonClicked = false;
   }
-}
-
-void subtractBatteryProfile() {
-  decreaseBatPro_button.draw();
-  if (decreaseBatPro_button.buttonClicked) {
+  if (decreaseBatPro_button.buttonClicked && isGraphRunning == false) {
     amountBatPro--;
     println(amountBatPro);
     decreaseBatPro_button.buttonClicked = false;
@@ -113,13 +108,13 @@ void subtractBatteryProfile() {
 void increaseDecreaseCurrentBatteryProfileButtons() {
   increaseCurrentBatteryProfileButton.draw();
   decreaseCurrentBatteryProfileButton.draw();
-  if (increaseCurrentBatteryProfileButton.buttonClicked) {
+  if (increaseCurrentBatteryProfileButton.buttonClicked && isGraphRunning == false) {
     if (currentBatteryProfile < amountBatPro) {
       currentBatteryProfile++;
     }
     increaseCurrentBatteryProfileButton.buttonClicked = false;
   }
-  if (decreaseCurrentBatteryProfileButton.buttonClicked) {
+  if (decreaseCurrentBatteryProfileButton.buttonClicked && isGraphRunning == false) {
     if (currentBatteryProfile > 1) {
       currentBatteryProfile--;
     }
