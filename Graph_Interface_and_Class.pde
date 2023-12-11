@@ -37,13 +37,13 @@ class savedGraph implements Graph {
 
   ArrayList<Float> getGraphData(int currentProfile) {
     ArrayList<Float> savedDataPoints = new ArrayList<Float>();
-    JSONArray jsonArray = batteryData.getJSONArray(str(currentProfile));
-    if (jsonArray != null) {
-      for (int i=0; i<jsonArray.size(); i++) {
-        Float element = jsonArray.getFloat(i);
-        savedDataPoints.add(element);
-      }
-    }
+    //JSONArray jsonArray = batteryData.getJSONArray(str(currentProfile));
+    //if (jsonArray != null) {
+    //  for (int i=0; i<jsonArray.size(); i++) {
+    //    Float element = jsonArray.getFloat(i);
+    //    savedDataPoints.add(element);
+    //  }
+    //}
     return savedDataPoints;
   }
 

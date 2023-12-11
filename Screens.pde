@@ -1,4 +1,3 @@
-
 void screenManagement() {
   switch (currentScreen) {
   case 0:

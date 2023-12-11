@@ -2,9 +2,16 @@ import processing.serial.*;
 import processing.data.*;
 import java.io.File;
 
-JSONObject batteryProfiles, batteryData;
-ArrayList<JSONObject> batteryProfileData = new ArrayList();
-String filePath = "data/output.json", batFilePath = "data/batteryProfiles.json";
+JSONObject profileFile;
+JSONObject dataFile;
+String dataFilePath = "data/output.json";
+String profileFilePath = "data/batteryProfiles.json";
+
+ArrayList<JSONObject> batteryProfileData = new ArrayList<>();
+
+
+
+
 ArrayList<Button> buttons = new ArrayList<>();
 Button escapeButton, currentVoltageButton, savedVoltageButton, increaseBatPro_button, decreaseBatPro_button, increaseCurrentBatteryProfileButton, decreaseCurrentBatteryProfileButton, settingsButton;
 currentGraph cg;
@@ -48,19 +55,19 @@ void keyPressed() {
       JSONdataPoints.append(f);
     }
 
-    batteryData.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
-    saveJSONObject(batteryData, filePath);
+    //batteryData.setJSONArray(str(currentBatteryProfile), JSONdataPoints);
+    //saveJSONObject(batteryData, filePath);
     println("JSON file created and data saved!");
   }
   if ( key == 'l') {
     ArrayList<Float> jsonArrayData = new ArrayList<Float>();
-    JSONArray jsonArray = batteryData.getJSONArray("Data Points");
-    for (int i=0; i<jsonArray.size(); i++) {
-      Float element = jsonArray.getFloat(i);
-      jsonArrayData.add(element);
-    }
-    println(jsonArrayData);
-    println("Pulled Array Successfully!");
+    //JSONArray jsonArray = batteryData.getJSONArray("Data Points");
+    //for (int i=0; i<jsonArray.size(); i++) {
+    //  Float element = jsonArray.getFloat(i);
+    // jsonArrayData.add(element);
+    //}
+    //println(jsonArrayData);
+    //println("Pulled Array Successfully!");
   }
 }
 
@@ -134,44 +141,34 @@ void setupButtons() {
 
 void jsonInitialize() {
 
-  File file = new File(sketchPath(filePath));
-  File batteryFile = new File(sketchPath(batFilePath));
+  File profileFileFinder = new File(sketchPath(profileFilePath));
 
-  if (file.exists() && batteryFile.exists()) {
-    batteryProfiles = loadJSONObject(batFilePath);
-    batteryData = loadJSONObject(filePath);
-  } else if (!file.exists() && batteryFile.exists()) {
-    batteryData = new JSONObject();
-    batteryProfiles = loadJSONObject(batFilePath);
-    saveJSONObject(batteryData, filePath);
-  } else if (file.exists() && !batteryFile.exists()) {
-    batteryData = loadJSONObject(filePath);
-    batteryProfiles = new JSONObject();
-    batteryProfiles.setInt("Number of Battery Profiles", 1);
-    batteryProfiles.setInt("Current Battery Profile", 1);
-    saveJSONObject(batteryProfiles, batFilePath);
+  if (profileFileFinder.exists()) {
+    profileFile = loadJSONObject(profileFilePath);
   } else {
-    batteryProfiles = new JSONObject();
-    batteryData = new JSONObject();
-    batteryProfiles.setInt("Number of Battery Profiles", 1);
-    batteryProfiles.setInt("Current Battery Profile", 1);
-    saveJSONObject(batteryData, filePath);
-    saveJSONObject(batteryProfiles, batFilePath);
+    profileFile = new JSONObject();
+    profileFile.setInt("numProfiles", 0);
+    profileFile.setString("currentProfile", "");
+    saveJSONObject(profileFile, profileFilePath);
   }
 
-  amountBatPro = batteryProfiles.getInt("Number of Battery Profiles");
-  currentBatteryProfile = batteryProfiles.getInt("Current Battery Profile");
-  println("Retrieved Int: "+amountBatPro);
-  println("Retrieved Current Profile: "+currentBatteryProfile);
+  File dataFileFinder = new File(sketchPath(dataFilePath));
 
-  for (int i=1; i<=amountBatPro; i++) {
-    if (batteryData.hasKey(str(i))) {
-      println("Battery Profile "+i+" exists.");
-      
-    } else {
-      println("Battery Profile "+i+" doesn't exist");
-      
-    }
+  if (dataFileFinder.exists()) {
+    dataFile = loadJSONObject(dataFilePath);
+  } else {
+    dataFile = new JSONObject();
+    dataFile.setJSONObject("profiles",new JSONObject());
+    saveJSONObject(dataFile, dataFilePath);
+  }
+}
+
+void batteryProfileInitialize() {
+  for (int i=0; i<amountBatPro; i++) {
+    JSONObject batteryProfile = new JSONObject();
+    batteryProfile.setInt("Nunmber of Tests: ", 0);
+    JSONArray profileArray = new JSONArray();
+    batteryProfile.setJSONArray("Test", profileArray);
   }
 }
 
@@ -195,14 +192,4 @@ void closePort() {
 }
 
 void saveDataOnClose() {
-  for (int i=0; i<amountBatPro; i++) {
-    
-    saveJSONObject(batteryProfiles, batFilePath);
-  }
-  if (currentBatteryProfile<1) {
-    currentBatteryProfile = 1;
-  }
-  batteryProfiles.setInt("Number of Battery Profiles", amountBatPro);
-  batteryProfiles.setInt("Current Battery Profile", currentBatteryProfile);
-  saveJSONObject(batteryProfiles, batFilePath);
 }
